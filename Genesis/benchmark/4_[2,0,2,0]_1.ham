@@ -1,0 +1,6 @@
+// an example with a controled qubit
+Const g1 = 1.5707963;
+
+Range i = [0, 1, 1];
+Result =
+  g1 * Sum_over(i){BA[i] * BA[i] * BC[i+2] * BC[i+2] + BA[i+2] * BA[i+2] * BC[i] * BC[i]};
