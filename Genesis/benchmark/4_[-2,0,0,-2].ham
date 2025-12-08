@@ -1,0 +1,6 @@
+// an example with a controled qubit
+Const g1 = 1.5707963;
+
+Range i = [0, 1, 1];
+Result =
+  g1 * Sum_over(i){TensorProd(Pauli_Z[i],  BA[i] * BA[i] * BA[i+3] * BA[i+3] + BC[i+3] * BC[i+3] * BC[i] * BC[i])};
