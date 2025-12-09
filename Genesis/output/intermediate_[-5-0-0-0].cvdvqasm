@@ -1,0 +1,2 @@
+// Generated for: Result;
+hybrid: exp(prod((-1.5707963j),sigma(3, 0),sum(prod(b(0),b(0),b(0),b(0),b(0)),prod(dagger(b(0)),dagger(b(0)),dagger(b(0)),dagger(b(0)),dagger(b(0))))));

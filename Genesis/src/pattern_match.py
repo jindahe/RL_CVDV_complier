@@ -278,15 +278,34 @@ class ParsedNode():
         return out_list
 
     def locate_rule_match(self, rule:Rule, detach_root=True, index_range:None|tuple[int,int]=None):
-        out_list:list[tuple[ParsedNode, tuple[int,int], dict[str, ParsedNode]]] = []
+        def _count_b_ops(node:ParsedNode|None) -> int:
+            """Recursively count `b` and `dagger(b)` occurrences inside a parsed node."""
+            if node is None:
+                return 0
+            count = 0
+            if node.name == 'b':
+                count += 1
+            for c in node.children:
+                count += _count_b_ops(c)
+            return count
+
+        scored:list[tuple[int, tuple[ParsedNode, tuple[int,int], dict[str, ParsedNode]]]] = []
         for match in self.locate_template(rule.input, rule.params, detach_root, index_range):
             try:
                 if not rule.has_condition or rule.conditions(match[2]):
-                    out_list.append(match)
+                    # match is a tuple (node, (start,end), params_dict)
+                    params_dict = match[2]
+                    m_node = params_dict.get('M') if isinstance(params_dict, dict) else None
+                    n_node = params_dict.get('N') if isinstance(params_dict, dict) else None
+                    diff_score = abs(_count_b_ops(m_node) - _count_b_ops(n_node)) if (m_node is not None and n_node is not None) else 0
+                    scored.append((diff_score, match))
             except Exception as e:
                 sys.stderr.write(f"Error checking conditions of: {match}\n")
                 raise e
-        return out_list
+
+        # Sort by smallest difference in b()/dagger(b()) counts so M and N are balanced
+        scored.sort(key=lambda x: x[0])
+        return [m for _, m in scored]
             
 
     def replace_node(self, replace_target:ParsedNode|str, replace_with:ParsedNode, index_offset:int=0):
