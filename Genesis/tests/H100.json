@@ -1,0 +1,14 @@
+[
+    {
+        "input_file": "benchmark/5_[-2,-2,-2,0,0].ham",
+        "output_file": "output/5_[-2,-2,-2,0,0].cvdvqasm"
+    },
+    {
+        "input_file": "benchmark/5_[-2,-2,-1,-1,0].ham",
+        "output_file": "output/5_[-2,-2,-1,-1,0].cvdvqasm"
+    },
+    {
+        "input_file": "benchmark/5_[-2,-2,-1,-1,-1].ham",
+        "output_file": "output/5_[-2,-2,-1,-1,-1].cvdvqasm"
+    }
+]
