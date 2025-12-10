@@ -610,13 +610,51 @@ new_rule = Rule(
 )
 decomp_rules_list.insert(0, new_rule)
 
+# [-3-2-0-0]
+new_rule = Rule(
+    parse_str('exp(prod(t, sigma(3, qb1), sum(prod(?b, ?b, ?b, ?c, ?c), prod(dagger(?c), dagger(?c), dagger(?b), dagger(?b), dagger(?b)))))'),
+    ['t', '?b', '?c'], 
+    parse_str('BCH( prod(t2, qgate(s, qb1), BOD(prod(?b, prod(?b, ?b)), qb2), qgate(sdg, qb1)), prod(t2, qgate(x, qb1), BOD(prod(?c, ?c), qb3), qgate(x, qb1)))'),
+    lambda x : x['?b'].name != '1' and x['?c'].name != '1' and _is_const(x['t']) and __is_squared_factor(complex(x['t'].name), 1j),
+    dict(t2=lambda x,_ : __get_squared_factor(complex(x['t'].name), 1j) * 1j,
+        qb2=(lambda _,env : __increment_counter(env.index_counters, 'qubit')),
+        qb3=(lambda _,env : __increment_counter(env.index_counters, 'qubit'))
+        ) 
+)
+decomp_rules_list.insert(0, new_rule)
 
-# additional rule for example 3 note(t < 0)
+new_rule = Rule(
+    parse_str('exp(prod(t, sigma(3, qb1), sum(prod(?b, ?b, ?b, ?c, ?c), prod(dagger(?c), dagger(?c), dagger(?b), dagger(?b), dagger(?b)))))'),
+    ['t', '?b', '?c'], 
+    parse_str('BCH( prod(t2, qgate(s, qb1), BOD(prod(?b, prod(?b, ?b)), qb2), qgate(sdg, qb1)), prod(t2, qgate(x, qb1), BOD(prod(?c, ?c), qb3), qgate(x, qb1)))'),
+    lambda x : x['?b'].name != '1' and x['?c'].name != '1' and _is_const(x['t']) and __is_squared_factor(complex(x['t'].name), -1j),
+    dict(t2=lambda x,_ : __get_squared_factor(complex(x['t'].name), -1j) * 1j,
+        qb2=(lambda _,env : __increment_counter(env.index_counters, 'qubit')),
+        qb3=(lambda _,env : __increment_counter(env.index_counters, 'qubit'))
+        ) 
+)
+decomp_rules_list.insert(0, new_rule)
+
+
+# additional rule for example 3 
 new_rule_2 = Rule(
     parse_str('exp(prod(t, sigma(3, qb1), sum(prod(?b, dagger(?b), dagger(?b)), prod(?b, ?b, dagger(?b)))))'),
     ['t', '?b', 'qb1'],
     parse_str('BCH( prod(t2, qgate(s, qb1), BOD(?b, qb2), qgate(sdg, qb1)), prod(t2, qgate(x, qb1), BOD(prod(dagger(?b), dagger(?b)), qb3), qgate(x, qb1)))'), #rule 7 output
-    lambda x : x['?b'].name != '1' and _is_const(x['t']),
+    lambda x : x['?b'].name != '1' and _is_const(x['t']) and __is_squared_factor(complex(x['t'].name), 1j),
+    dict(t2=lambda x,_ : __get_squared_factor(complex(x['t'].name), 1j) * 1j,
+        qb2=(lambda _,env : __increment_counter(env.index_counters, 'qubit')),
+        qb3=(lambda _,env : __increment_counter(env.index_counters, 'qubit'))
+        )        
+)
+
+decomp_rules_list.insert(0, new_rule_2)
+
+new_rule_2 = Rule(
+    parse_str('exp(prod(t, sigma(3, qb1), sum(prod(?b, dagger(?b), dagger(?b)), prod(?b, ?b, dagger(?b)))))'),
+    ['t', '?b', 'qb1'],
+    parse_str('BCH( prod(t2, qgate(s, qb1), BOD(?b, qb2), qgate(sdg, qb1)), prod(t2, qgate(x, qb1), BOD(prod(dagger(?b), dagger(?b)), qb3), qgate(x, qb1)))'), #rule 7 output
+    lambda x : x['?b'].name != '1' and _is_const(x['t']) and __is_squared_factor(complex(x['t'].name), -1j),
     dict(t2=lambda x,_ : __get_squared_factor(complex(x['t'].name), -1j) * 1j,
         qb2=(lambda _,env : __increment_counter(env.index_counters, 'qubit')),
         qb3=(lambda _,env : __increment_counter(env.index_counters, 'qubit'))
